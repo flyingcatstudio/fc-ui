@@ -1,0 +1,51 @@
+# fc-ui
+
+> Flying Cat UI — theme-aware React component library. A single `FcProvider` swaps a CSS-variable bag and reskins every component in real time. Ships three presets: **Dashboard**, **Glass** (Apple-style), and **8-bit** (`cute`). No per-component theme prop.
+
+Components consume only `--fc-*` CSS variables defined by the active theme; consumers can register custom themes by adding entries to the exported `THEMES` map. Built as a dual ESM/CJS library via `tsup`; the `examples/` Vite app aliases `fc-ui` → `./src/index.js` so the playground imports it as a downstream consumer would.
+
+Stack: React 18+ peer, `lucide-react` peer for icons, Vite (playground), tsup (build). Theme switching is driven by `data-fc-theme="<key>"` on the provider root plus CSS variables — there is no runtime style engine.
+
+## Docs
+
+- [README.md](README.md): Setup, build, usage examples, custom theme recipe, folder structure overview.
+
+## Public API surface
+
+- [src/index.js](src/index.js): Barrel re-exporting everything consumers can import from `'fc-ui'`.
+- [src/core/index.js](src/core/index.js): Re-exports `FcProvider`, `useFc`, `THEMES`, `FONTS_URL`.
+- [src/core/FcProvider.jsx](src/core/FcProvider.jsx): Theme context provider, injects global keyframes + per-theme CSS variables. `useFc()` returns `{ theme, setTheme }`.
+- [src/core/themes.js](src/core/themes.js): The `THEMES` object — each entry is `{ name, mascot, vars }` where `vars` is a flat bag of `--fc-*` CSS variables. Add a key here (or mutate `THEMES` at runtime) to register a new theme.
+
+## Component categories
+
+All components are exported flat from `'fc-ui'` (no subpaths). Names below match exports.
+
+- [src/components/typography/](src/components/typography/): `FcTitle`, `FcEm`, `FcSubtitle`, `FcText`, `FcCaption`, `FcEyebrow`, `FcLabel`.
+- [src/components/buttons/](src/components/buttons/): `FcButton`, `FcIconButton`, `FcSwitch`, `FcSegmented`.
+- [src/components/tags/](src/components/tags/): `FcTag`, `FcBadge`, `FcKbd`, `FcChip`, `FcDot`.
+- [src/components/form/](src/components/form/): `FcInput`, `FcTextarea`, `FcCheckbox`, `FcRadio`, `FcSelect`, `FcSlider`.
+- [src/components/display/](src/components/display/): `FcAvatar`, `FcAvatarGroup`, `FcProgress`, `FcSpinner`, `FcMetric`.
+- [src/components/disclosure/](src/components/disclosure/): `FcAccordion`, `FcAccordionItem`, `FcTabs`.
+- [src/components/feedback/](src/components/feedback/): `FcAlert`, `FcToastProvider`, `useToast`, `FcEmpty`, `FcTooltip`, `FcModal`.
+- [src/components/container/](src/components/container/): `FcCard`, `FcPanel`, `FcDivider`, `FcSection`, `FcRow`.
+- [src/components/nav/](src/components/nav/): `FcNavGroup`, `FcNavItem`, `FcBreadcrumb`, `FcLogo`, `FcThemeSwitcher`, `FcDotNavigation`, `FcDialNav`.
+- [src/layout/HolyGrail.jsx](src/layout/HolyGrail.jsx): 5-slot compound page layout.
+- [src/skeleton/Sk.jsx](src/skeleton/Sk.jsx): Loading skeletons — `Sk.Box`, `Sk.Circle`, `Sk.Text`.
+
+## Conventions
+
+- Every component renders styling from `var(--fc-*)` tokens. Do **not** hardcode colors, radii, fonts, or shadows in components — extend `THEMES` instead.
+- The provider tags its root with `data-fc-theme="<key>"`. Theme-specific overrides (e.g. Glass `backdrop-filter`, 8-bit scanlines) live in the global `<style>` block inside `FcProvider`, scoped by that attribute.
+- Components opt into theme-specific treatments by setting `data-fc-slot`, `data-fc-glass`, `data-fc-sk`, `data-fc-mascot` on their rendered DOM — see `FcProvider.jsx` for the full list.
+- Library entry is `src/index.js`. Anything intended for consumers must be re-exported there.
+- Build outputs `dist/index.js` (ESM) and `dist/index.cjs` (CJS); peer deps are `react`, `react-dom`, `lucide-react`.
+
+## Playground
+
+- [examples/App.jsx](examples/App.jsx): Full interactive showcase — the canonical reference for how each component is expected to be used.
+- Run with `npm run dev` (Vite, port 5173).
+
+## Maintenance rule
+
+When changing `README.md` or any code under `src/` that affects the public API, **also update `llms.txt`** in the same change. See the "Keeping llms.txt in sync" section of `CLAUDE.md` for the exact triggers.

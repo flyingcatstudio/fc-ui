@@ -133,6 +133,10 @@ THEMES.midnight = {
 
 The `<FcThemeSwitcher />` automatically picks up new themes.
 
+## Contributing
+
+This repo ships an [`llms.txt`](./llms.txt) summary for LLM tooling. When you change `README.md` or the public API under `src/` (exports, component files, theme keys, provider/hook signatures), update `llms.txt` in the same commit. See [`CLAUDE.md`](./CLAUDE.md) for the exact triggers.
+
 ## License
 
 MIT
