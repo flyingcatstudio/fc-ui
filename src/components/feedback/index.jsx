@@ -1,3 +1,4 @@
+import React from 'react';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { Inbox, Info, CheckCircle2, AlertTriangle, XCircle, X } from 'lucide-react';
 import { FcDot } from '../tags/index.jsx';

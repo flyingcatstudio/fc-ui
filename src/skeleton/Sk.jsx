@@ -1,3 +1,4 @@
+import React from 'react';
 const skBase = {
   background:'linear-gradient(90deg, var(--fc-sk-from) 0%, var(--fc-sk-to) 50%, var(--fc-sk-from) 100%)',
   backgroundSize:'200% 100%',

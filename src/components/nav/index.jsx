@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useFc } from '../../core/FcProvider.jsx';

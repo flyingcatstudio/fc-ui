@@ -1,3 +1,4 @@
+import React from 'react';
 import { Loader2, TrendingUp } from 'lucide-react';
 import { FcCaption } from '../typography/index.jsx';
 

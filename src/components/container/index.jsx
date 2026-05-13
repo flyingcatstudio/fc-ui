@@ -1,3 +1,4 @@
+import React from 'react';
 export const FcCard = ({ children, padding=20, style }) => (
   <div data-fc-glass style={{
     background:'var(--fc-surface)',

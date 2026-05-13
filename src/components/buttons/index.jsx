@@ -1,3 +1,4 @@
+import React from 'react';
 export const FcButton = ({ variant='primary', size='md', icon, children, onClick, disabled, style }) => {
   const sizes = { sm:{ p:'6px 12px', f:11 }, md:{ p:'10px 16px', f:12 }, lg:{ p:'12px 20px', f:13 } };
   const variants = {

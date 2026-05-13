@@ -1,3 +1,4 @@
+import React from 'react';
 export const FcTitle = ({ children, size=36 }) => (
   <h1 className="fc-display" style={{
     fontFamily:'var(--fc-font-display)',
