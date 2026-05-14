@@ -1,13 +1,24 @@
 import React from 'react';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, lazy, Suspense, useContext, useMemo, useState } from 'react';
 import { THEMES, FONTS_URL } from './themes.js';
 
-const FcCtx = createContext({ theme: 'dashboard', setTheme: () => {} });
+const FcCatLazy = lazy(() => import('../cat/FcCat.jsx'));
+
+const FcCtx = createContext({
+  theme: 'dashboard',
+  setTheme: () => {},
+  catEnabled: false,
+  setCatEnabled: () => {},
+});
 export const useFc = () => useContext(FcCtx);
 
-export function FcProvider({ children, defaultTheme = 'dashboard' }) {
+export function FcProvider({ children, defaultTheme = 'dashboard', cat = false }) {
   const [theme, setTheme] = useState(defaultTheme);
-  const value = useMemo(() => ({ theme, setTheme }), [theme]);
+  const [catEnabled, setCatEnabled] = useState(cat);
+  const value = useMemo(
+    () => ({ theme, setTheme, catEnabled, setCatEnabled }),
+    [theme, catEnabled],
+  );
   const vars = THEMES[theme].vars;
 
   return (
@@ -63,6 +74,11 @@ export function FcProvider({ children, defaultTheme = 'dashboard' }) {
         }}
       >
         {children}
+        {catEnabled && (
+          <Suspense fallback={null}>
+            <FcCatLazy />
+          </Suspense>
+        )}
       </div>
     </FcCtx.Provider>
   );

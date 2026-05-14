@@ -9,5 +9,8 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   minify: true,
-  splitting: false,
+  splitting: true,
+  esbuildOptions(options) {
+    options.loader = { ...(options.loader ?? {}), '.png': 'dataurl' };
+  },
 });

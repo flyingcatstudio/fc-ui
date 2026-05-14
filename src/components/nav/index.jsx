@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useFc } from '../../core/FcProvider.jsx';
 import { THEMES } from '../../core/themes.js';
+import catJumpUrl from '../../assets/cat_jump.png';
 
 export const FcNavGroup = ({ label, children }) => (
   <div style={{ marginBottom:18 }}>
@@ -53,19 +54,23 @@ export const FcBreadcrumb = ({ items }) => (
 
 export const FcLogo = ({ subtitle, name='fc-ui' }) => {
   const { theme } = useFc();
-  const t = THEMES[theme];
   const isCute = theme === 'cute';
   return (
     <div style={{ display:'flex', alignItems:'center', gap:12 }}>
       <div data-fc-mascot style={{
-        width:34, height:34, display:'grid', placeItems:'center',
-        background: isCute?'var(--fc-accent-2)':'var(--fc-ink)',
-        color: isCute?'var(--fc-accent)':'#fff',
-        border:'var(--fc-border-width) solid var(--fc-line)',
-        borderRadius:'var(--fc-r-md)', boxShadow:'var(--fc-shadow-card)',
-        fontSize: isCute?18:16,
+        width:38, height:38, display:'grid', placeItems:'center',
         animation: isCute?'none':'fc-float 2.4s ease-in-out infinite',
-      }}>{t.mascot}</div>
+      }}>
+        <img
+          src={catJumpUrl}
+          alt=""
+          draggable={false}
+          style={{
+            width:'100%', height:'100%', objectFit:'contain',
+            pointerEvents:'none', userSelect:'none',
+          }}
+        />
+      </div>
       <div>
         <div className="fc-display" style={{
           fontFamily:'var(--fc-font-display)', fontSize: isCute?11:16,

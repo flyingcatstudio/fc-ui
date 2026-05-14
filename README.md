@@ -1,88 +1,45 @@
-# fc-ui
+# @fcstudio/fc-ui
 
-Flying Cat UI — theme-aware React component library with **Dashboard**, **Glass** (Apple-style), and **8-bit** presets.
+> Flying Cat UI — a theme-aware React component library. Swap one provider and the entire interface reskins.
 
-Switching themes reskins every component in real time. All components read from CSS variables, no per-component theme prop.
+`@fcstudio/fc-ui` ships a curated set of accessible React components and three production-ready visual presets — **Dashboard**, **Glass** (Apple-style), and **8-bit** — driven by a single CSS-variable bag. There is no per-component theme prop, no runtime style engine, no global stylesheet to bolt on. Wrap your tree in `<FcProvider>`, pick a theme, and every component picks up the new look in the same render.
 
-## Folder structure
+## Why fc-ui
 
-```
-fc-ui/
-├── src/
-│   ├── core/
-│   │   ├── FcProvider.jsx     # theme context + global CSS
-│   │   ├── themes.js          # Dashboard / Glass / 8-bit presets
-│   │   └── index.js
-│   ├── layout/
-│   │   └── HolyGrail.jsx      # 5-slot compound layout
-│   ├── skeleton/
-│   │   └── Sk.jsx             # Sk.Box / Circle / Text
-│   ├── components/
-│   │   ├── typography/        # FcTitle FcEm FcSubtitle FcText FcCaption FcEyebrow FcLabel
-│   │   ├── buttons/           # FcButton FcIconButton FcSwitch FcSegmented
-│   │   ├── tags/              # FcTag FcBadge FcKbd FcChip FcDot
-│   │   ├── form/              # FcInput FcTextarea FcCheckbox FcRadio FcSelect FcSlider
-│   │   ├── display/           # FcAvatar FcAvatarGroup FcProgress FcSpinner FcMetric
-│   │   ├── disclosure/        # FcAccordion FcAccordionItem FcTabs
-│   │   ├── feedback/          # FcAlert FcToastProvider useToast FcEmpty FcTooltip FcModal
-│   │   ├── container/         # FcCard FcPanel FcDivider FcSection FcRow
-│   │   └── nav/               # FcNavGroup FcNavItem FcBreadcrumb FcLogo FcThemeSwitcher
-│   │                          # FcDotNavigation FcDialNav
-│   └── index.js               # barrel — re-exports everything
-├── examples/
-│   ├── index.html
-│   ├── main.jsx
-│   └── App.jsx                # full interactive showcase
-├── package.json
-├── vite.config.js             # dev server for examples
-├── tsup.config.ts             # library build
-└── README.md
-```
+- **One source of truth for theming.** Every component reads from `--fc-*` CSS variables. Switch themes by changing one attribute on the root.
+- **Three opinionated presets out of the box.** Dashboard for product UI, Glass for marketing-grade visuals, 8-bit for playful surfaces — including fonts, radii, shadows, and motion.
+- **Bring your own theme.** Add an entry to the exported `THEMES` map and it shows up in the switcher automatically.
+- **Distinct themes, identical API.** The same `<FcButton>` adapts to each preset without prop or className gymnastics.
+- **Light footprint.** ESM + CJS dual build, tree-shakeable exports, only `react`, `react-dom`, and `lucide-react` as peer dependencies.
 
-## Setup
+## Installation
 
 ```bash
-cd ~/work/fc-ui
-npm install
+npm install @fcstudio/fc-ui react react-dom lucide-react
 ```
 
-## Run the playground
+Peer requirements: React 18+, React DOM 18+, `lucide-react` 0.300+.
 
-```bash
-npm run dev          # http://localhost:5173
-```
-
-The Vite dev server has an alias from `'fc-ui'` → `./src/index.js`, so the example app imports the library exactly as a consumer would.
-
-## Build the library
-
-```bash
-npm run build        # outputs dist/index.js (ESM) + dist/index.cjs (CJS)
-```
-
-## Use in your own project
-
-Either:
-
-1. **Local linking** for now:
-   ```bash
-   cd ~/work/fc-ui && npm link
-   cd ~/work/your-project && npm link fc-ui
-   ```
-2. **GitHub install**:
-   ```bash
-   npm install github:YOUR_USERNAME/fc-ui
-   ```
-3. **Publish to npm** later (`npm publish` after the API stabilizes).
-
-## Usage example
+## Quick start
 
 ```jsx
-import { FcProvider, FcToastProvider, FcCard, FcButton, FcTitle, FcEm, useToast } from 'fc-ui';
+import {
+  FcProvider,
+  FcToastProvider,
+  FcCard,
+  FcTitle,
+  FcEm,
+  FcButton,
+  useToast,
+} from '@fcstudio/fc-ui';
 
-function MyButton() {
+function SaveButton() {
   const toast = useToast();
-  return <FcButton onClick={() => toast({ message: 'Hello!' })}>Click me</FcButton>;
+  return (
+    <FcButton onClick={() => toast({ message: 'Saved!', tone: 'success' })}>
+      Save
+    </FcButton>
+  );
 }
 
 export default function App() {
@@ -90,8 +47,10 @@ export default function App() {
     <FcProvider defaultTheme="glass">
       <FcToastProvider>
         <FcCard>
-          <FcTitle>Hello, <FcEm>world</FcEm></FcTitle>
-          <MyButton />
+          <FcTitle>
+            Hello, <FcEm>world</FcEm>
+          </FcTitle>
+          <SaveButton />
         </FcCard>
       </FcToastProvider>
     </FcProvider>
@@ -99,25 +58,37 @@ export default function App() {
 }
 ```
 
+That's it — no CSS import required. `<FcProvider>` injects the active theme's variables and the base keyframes on its own root.
+
 ## Switching themes at runtime
 
-```jsx
-import { useFc } from 'fc-ui';
+`useFc()` exposes the active theme key and a setter. Every built-in or registered theme works the same way.
 
-function ThemeToggle() {
+```jsx
+import { useFc, THEMES } from '@fcstudio/fc-ui';
+
+function ThemeSwitcher() {
   const { theme, setTheme } = useFc();
   return (
-    <button onClick={() => setTheme(theme === 'glass' ? 'cute' : 'glass')}>
-      Toggle
-    </button>
+    <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+      {Object.entries(THEMES).map(([key, { name }]) => (
+        <option key={key} value={key}>
+          {name}
+        </option>
+      ))}
+    </select>
   );
 }
 ```
 
+There's also a ready-made `<FcThemeSwitcher />` that renders the same dropdown styled for the current theme.
+
 ## Adding a custom theme
 
+A theme is just a flat bag of CSS variables. Register a new entry and the switcher picks it up.
+
 ```jsx
-import { THEMES } from 'fc-ui';
+import { THEMES } from '@fcstudio/fc-ui';
 
 THEMES.midnight = {
   name: 'Midnight',
@@ -126,17 +97,59 @@ THEMES.midnight = {
     '--fc-bg': '#0a0a0f',
     '--fc-surface': '#15151c',
     '--fc-ink': '#e4e4e7',
-    // ...all other --fc-* tokens (see src/core/themes.js for the full list)
+    '--fc-accent': '#a78bfa',
+    // …rest of the --fc-* tokens (see THEMES.dashboard for the full list)
   },
 };
 ```
 
-The `<FcThemeSwitcher />` automatically picks up new themes.
+Spread an existing theme's `vars` to inherit defaults and override only what you need:
 
-## Contributing
+```jsx
+THEMES.midnight.vars = { ...THEMES.dashboard.vars, '--fc-bg': '#0a0a0f' /* … */ };
+```
 
-This repo ships an [`llms.txt`](./llms.txt) summary for LLM tooling. When you change `README.md` or the public API under `src/` (exports, component files, theme keys, provider/hook signatures), update `llms.txt` in the same commit. See [`CLAUDE.md`](./CLAUDE.md) for the exact triggers.
+## What's included
+
+Components are exported flat — no subpaths.
+
+| Category    | Exports                                                                          |
+| ----------- | -------------------------------------------------------------------------------- |
+| Core        | `FcProvider`, `useFc`, `THEMES`, `FONTS_URL`                                     |
+| Layout      | `HolyGrail` (5-slot compound layout)                                             |
+| Skeleton    | `Sk.Box`, `Sk.Circle`, `Sk.Text`                                                 |
+| Typography  | `FcTitle`, `FcEm`, `FcSubtitle`, `FcText`, `FcCaption`, `FcEyebrow`, `FcLabel`   |
+| Buttons     | `FcButton`, `FcIconButton`, `FcSwitch`, `FcSegmented`                            |
+| Tags        | `FcTag`, `FcBadge`, `FcKbd`, `FcChip`, `FcDot`                                   |
+| Form        | `FcInput`, `FcTextarea`, `FcCheckbox`, `FcRadio`, `FcSelect`, `FcSlider`         |
+| Display     | `FcAvatar`, `FcAvatarGroup`, `FcProgress`, `FcSpinner`, `FcMetric`               |
+| Disclosure  | `FcAccordion`, `FcAccordionItem`, `FcTabs`                                       |
+| Feedback    | `FcAlert`, `FcToastProvider`, `useToast`, `FcEmpty`, `FcTooltip`, `FcModal`      |
+| Container   | `FcCard`, `FcPanel`, `FcDivider`, `FcSection`, `FcRow`                           |
+| Navigation  | `FcNavGroup`, `FcNavItem`, `FcBreadcrumb`, `FcLogo`, `FcThemeSwitcher`, `FcDotNavigation`, `FcDialNav` |
+
+## How theming works
+
+`<FcProvider theme="glass">` sets `data-fc-theme="glass"` on its root and inlines the matching theme's `--fc-*` variables. Components reference those variables directly via `var(--fc-*)`, so a theme swap is a one-frame restyle.
+
+Theme-specific treatments (Glass backdrop blur, 8-bit scanlines, press effects) live inside the provider's scoped global stylesheet and are gated by the same `data-fc-theme` attribute. Components opt into them via lightweight markers like `data-fc-slot`, `data-fc-glass`, `data-fc-sk`, and `data-fc-mascot`.
+
+The implication: building a custom component that fits the system means consuming `--fc-*` tokens — never hardcoded colors, radii, or fonts.
+
+## TypeScript
+
+Components are authored in JSX and consumed without types in the current release. A `.d.ts` build is on the roadmap.
+
+## Compatibility
+
+- React 18+ (uses `useId`, automatic batching paths)
+- Modern evergreen browsers (CSS custom properties, `backdrop-filter` for the Glass preset)
+- ESM and CJS consumers (dual `exports` map)
 
 ## License
 
-MIT
+MIT © Hyun
+
+## Contributing
+
+This repository ships an [`llms.txt`](./llms.txt) summary for LLM tooling. When you change `README.md` or the public API under `src/` (exports, component files, theme keys, provider/hook signatures), update `llms.txt` in the same commit. See [`CLAUDE.md`](./CLAUDE.md) for the exact triggers.

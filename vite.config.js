@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      'fc-ui': path.resolve(__dirname, 'src/index.js'),
+      '@fcstudio/fc-ui': path.resolve(__dirname, 'src/index.js'),
     },
   },
   server: { port: 5173, open: true },

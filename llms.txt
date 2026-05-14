@@ -1,25 +1,25 @@
-# fc-ui
+# @fcstudio/fc-ui
 
-> Flying Cat UI — theme-aware React component library. A single `FcProvider` swaps a CSS-variable bag and reskins every component in real time. Ships three presets: **Dashboard**, **Glass** (Apple-style), and **8-bit** (`cute`). No per-component theme prop.
+> Flying Cat UI — theme-aware React component library. A single `FcProvider` swaps a CSS-variable bag and reskins every component in real time. Ships three presets: **Dashboard**, **Glass** (Apple-style), and **8-bit** (`cute`). No per-component theme prop. Published on npm as `@fcstudio/fc-ui`.
 
-Components consume only `--fc-*` CSS variables defined by the active theme; consumers can register custom themes by adding entries to the exported `THEMES` map. Built as a dual ESM/CJS library via `tsup`; the `examples/` Vite app aliases `fc-ui` → `./src/index.js` so the playground imports it as a downstream consumer would.
+Components consume only `--fc-*` CSS variables defined by the active theme; consumers can register custom themes by adding entries to the exported `THEMES` map. Built as a dual ESM/CJS library via `tsup`; the `examples/` Vite app aliases `@fcstudio/fc-ui` → `./src/index.js` so the playground imports it as a downstream consumer would.
 
 Stack: React 18+ peer, `lucide-react` peer for icons, Vite (playground), tsup (build). Theme switching is driven by `data-fc-theme="<key>"` on the provider root plus CSS variables — there is no runtime style engine.
 
 ## Docs
 
-- [README.md](README.md): Setup, build, usage examples, custom theme recipe, folder structure overview.
+- [README.md](README.md): User-facing overview — install, quick start, theme switching, custom theme recipe, component table, theming model.
 
 ## Public API surface
 
-- [src/index.js](src/index.js): Barrel re-exporting everything consumers can import from `'fc-ui'`.
+- [src/index.js](src/index.js): Barrel re-exporting everything consumers can import from `'@fcstudio/fc-ui'`.
 - [src/core/index.js](src/core/index.js): Re-exports `FcProvider`, `useFc`, `THEMES`, `FONTS_URL`.
-- [src/core/FcProvider.jsx](src/core/FcProvider.jsx): Theme context provider, injects global keyframes + per-theme CSS variables. `useFc()` returns `{ theme, setTheme }`.
+- [src/core/FcProvider.jsx](src/core/FcProvider.jsx): Theme context provider, injects global keyframes + per-theme CSS variables. Accepts `defaultTheme` and `cat` (boolean, default `false`) props. `useFc()` returns `{ theme, setTheme, catEnabled, setCatEnabled }`. When `catEnabled` is true, the provider lazy-loads and renders `<FcCat />` as a fixed overlay.
 - [src/core/themes.js](src/core/themes.js): The `THEMES` object — each entry is `{ name, mascot, vars }` where `vars` is a flat bag of `--fc-*` CSS variables. Add a key here (or mutate `THEMES` at runtime) to register a new theme.
 
 ## Component categories
 
-All components are exported flat from `'fc-ui'` (no subpaths). Names below match exports.
+All components are exported flat from `'@fcstudio/fc-ui'` (no subpaths). Names below match exports.
 
 - [src/components/typography/](src/components/typography/): `FcTitle`, `FcEm`, `FcSubtitle`, `FcText`, `FcCaption`, `FcEyebrow`, `FcLabel`.
 - [src/components/buttons/](src/components/buttons/): `FcButton`, `FcIconButton`, `FcSwitch`, `FcSegmented`.
@@ -29,9 +29,11 @@ All components are exported flat from `'fc-ui'` (no subpaths). Names below match
 - [src/components/disclosure/](src/components/disclosure/): `FcAccordion`, `FcAccordionItem`, `FcTabs`.
 - [src/components/feedback/](src/components/feedback/): `FcAlert`, `FcToastProvider`, `useToast`, `FcEmpty`, `FcTooltip`, `FcModal`.
 - [src/components/container/](src/components/container/): `FcCard`, `FcPanel`, `FcDivider`, `FcSection`, `FcRow`.
-- [src/components/nav/](src/components/nav/): `FcNavGroup`, `FcNavItem`, `FcBreadcrumb`, `FcLogo`, `FcThemeSwitcher`, `FcDotNavigation`, `FcDialNav`.
+- [src/components/nav/](src/components/nav/): `FcNavGroup`, `FcNavItem`, `FcBreadcrumb`, `FcLogo` (renders `cat_jump.png` as the mascot — no longer per-theme text/emoji), `FcThemeSwitcher`, `FcDotNavigation`, `FcDialNav`.
 - [src/layout/HolyGrail.jsx](src/layout/HolyGrail.jsx): 5-slot compound page layout.
 - [src/skeleton/Sk.jsx](src/skeleton/Sk.jsx): Loading skeletons — `Sk.Box`, `Sk.Circle`, `Sk.Text`.
+- [src/cat/FcCat.jsx](src/cat/FcCat.jsx): Opt-in pixel cat overlay. Renders `cat_stare.png` as a fixed-position DOM image that slides in from the right (or flipped from the left, randomly chosen each visit), holds briefly, then slides back out. First visit fires ~1.5s after mount; subsequent visits every 5–7 minutes. `pointer-events: none` and `user-select: none` — purely decorative, never interactive. The image is inlined as a data URL via tsup's dataurl loader. The cat module is code-split into its own chunk so `cat={false}` (the default) consumers pay zero bytes for it.
+- [src/assets/](src/assets/): `cat_jump.png` (used by `FcLogo` as the always-visible mascot, inlined into the main bundle) and `cat_stare.png` (used only by `FcCat`, inlined into the lazy cat chunk).
 
 ## Conventions
 
@@ -39,7 +41,7 @@ All components are exported flat from `'fc-ui'` (no subpaths). Names below match
 - The provider tags its root with `data-fc-theme="<key>"`. Theme-specific overrides (e.g. Glass `backdrop-filter`, 8-bit scanlines) live in the global `<style>` block inside `FcProvider`, scoped by that attribute.
 - Components opt into theme-specific treatments by setting `data-fc-slot`, `data-fc-glass`, `data-fc-sk`, `data-fc-mascot` on their rendered DOM — see `FcProvider.jsx` for the full list.
 - Library entry is `src/index.js`. Anything intended for consumers must be re-exported there.
-- Build outputs `dist/index.js` (ESM) and `dist/index.cjs` (CJS); peer deps are `react`, `react-dom`, `lucide-react`.
+- Build outputs `dist/index.js` (ESM) and `dist/index.cjs` (CJS) plus lazy chunks (`dist/chunk-*.js`, `dist/FcCat-*.js`) for the cat module. tsup runs with `splitting: true` so `React.lazy(() => import(...))` inside `FcProvider` produces a real code-split boundary; peer deps are `react`, `react-dom`, `lucide-react`.
 
 ## Playground
 

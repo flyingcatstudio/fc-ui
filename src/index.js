@@ -12,6 +12,9 @@ export { HolyGrail } from './layout/HolyGrail.jsx';
 // ── Skeleton
 export { Sk } from './skeleton/Sk.jsx';
 
+// ── Cat
+export { FcCat } from './cat/FcCat.jsx';
+
 // ── Components by category
 export * from './components/typography/index.jsx';
 export * from './components/buttons/index.jsx';

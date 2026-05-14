@@ -29,7 +29,7 @@ import {
   // Nav
   FcNavGroup, FcNavItem, FcBreadcrumb, FcLogo, FcThemeSwitcher,
   FcDotNavigation, FcDialNav,
-} from 'fc-ui';
+} from '@fcstudio/fc-ui';
 
 const CATEGORIES = [
   { id:'typography', label:'Typography', icon:Type },
@@ -407,6 +407,16 @@ const COMPONENT_COUNTS = {
   disclosure: 2, feedback: 5, container: 4, navigation: 5,
 };
 
+function CatToggle() {
+  const { catEnabled, setCatEnabled } = useFc();
+  return (
+    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+      <span style={{ fontSize:11, fontFamily:'var(--fc-font-mono)', color:'var(--fc-ink-2)', letterSpacing:'0.08em' }}>CAT</span>
+      <FcSwitch checked={catEnabled} onChange={setCatEnabled}/>
+    </div>
+  );
+}
+
 function Showcase() {
   const [active, setActive] = useState('buttons');
   const Comp = SHOWCASES[active];
@@ -417,7 +427,10 @@ function Showcase() {
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:24, height:'100%' }}>
           <FcLogo subtitle="component library · v0.1.0"/>
           <FcBreadcrumb items={['fc-ui', 'Components', cat.label]}/>
-          <FcThemeSwitcher/>
+          <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+            <CatToggle/>
+            <FcThemeSwitcher/>
+          </div>
         </div>
       </HolyGrail.Header>
 

@@ -1,7 +1,7 @@
 {
-  "name": "fc-ui",
+  "name": "@fcstudio/fc-ui",
   "version": "0.1.0",
-  "description": "Flying Cat UI — theme-aware React component library with Dashboard, Glass, and 8-bit presets",
+  "description": "Flying Cat UI — theme-aware React component library. Swap a single provider and reskin every component (Dashboard, Glass, 8-bit, or your own).",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
