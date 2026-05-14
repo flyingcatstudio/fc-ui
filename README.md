@@ -1,6 +1,12 @@
 # @fcstudio/fc-ui
 
+[![npm version](https://img.shields.io/npm/v/@fcstudio/fc-ui.svg)](https://www.npmjs.com/package/@fcstudio/fc-ui)
+[![npm downloads](https://img.shields.io/npm/dm/@fcstudio/fc-ui.svg)](https://www.npmjs.com/package/@fcstudio/fc-ui)
+[![license](https://img.shields.io/npm/l/@fcstudio/fc-ui.svg)](https://www.npmjs.com/package/@fcstudio/fc-ui)
+
 > Flying Cat UI — a theme-aware React component library. Swap one provider and the entire interface reskins.
+
+**npm:** https://www.npmjs.com/package/@fcstudio/fc-ui
 
 `@fcstudio/fc-ui` ships a curated set of accessible React components and three production-ready visual presets — **Dashboard**, **Glass** (Apple-style), and **8-bit** — driven by a single CSS-variable bag. There is no per-component theme prop, no runtime style engine, no global stylesheet to bolt on. Wrap your tree in `<FcProvider>`, pick a theme, and every component picks up the new look in the same render.
 
@@ -14,8 +20,18 @@
 
 ## Installation
 
+The package is published on npm at [`@fcstudio/fc-ui`](https://www.npmjs.com/package/@fcstudio/fc-ui).
+
 ```bash
 npm install @fcstudio/fc-ui react react-dom lucide-react
+```
+
+Or with your package manager of choice:
+
+```bash
+yarn add @fcstudio/fc-ui react react-dom lucide-react
+pnpm add @fcstudio/fc-ui react react-dom lucide-react
+bun add  @fcstudio/fc-ui react react-dom lucide-react
 ```
 
 Peer requirements: React 18+, React DOM 18+, `lucide-react` 0.300+.
